@@ -26,7 +26,8 @@ model Project {
 
   users ProjectUser[] @relation("ProjectUsers")
 
-  apiKeySets ApiKeySet[]
+  apiKeySets    ApiKeySet[]
+  userAnalytics UserAnalyticsEvent[]
 }
 
 // Contains all the configuration for a project.
@@ -97,8 +98,9 @@ model ProjectUser {
   passwordHash         String?
   authWithEmail        Boolean
 
-  serverMetadata Json?
-  clientMetadata Json?
+  serverMetadata     Json?
+  clientMetadata     Json?
+  UserAnalyticsEvent UserAnalyticsEvent[]
 
   @@id([projectId, projectUserId])
   @@unique([projectId, primaryEmail, authWithEmail])
@@ -327,3 +329,30 @@ enum StandardOAuthProviderType {
 }
 
 //#endregion
+
+enum UserAnalyticsEventType {
+  SIGN_UP
+  FETCH_CURRENT_USER
+}
+
+model UserAnalyticsEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectId     String
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectUserId String
+  projectUser   ProjectUser @relation(fields: [projectId, projectUserId], references: [projectId, projectUserId])
+
+  type           UserAnalyticsEventType
+  ip             String
+  country        String
+  region         String
+  os             String
+  osVersion      String
+  browser        String
+  browserVersion String
+  platform       String // desktop, mobile
+  payload        Json
+}
