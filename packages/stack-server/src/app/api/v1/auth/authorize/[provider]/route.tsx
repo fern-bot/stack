@@ -84,7 +84,8 @@ export const GET = deprecatedSmartRouteHandler(async (req: NextRequest, options:
     innerState,
   });
 
-  cookies().set("stack-oauth", cookie, {
+  // set stack-auth cookie with state in the name so we can have multiple oauth flows at the same time
+  cookies().set("stack-oauth-" + innerState.slice(0, 5), cookie, {
     httpOnly: true,
     maxAge: 1000 * 60 * 5, // 5 minutes
   });

@@ -8,7 +8,6 @@ import MessageCard from "../components/message-card";
 export default function OAuthCallback () {
   const app = useStackApp();
   const called = useRef(false);
-  const [error, setError] = useState<unknown>(null);
   const [showRedirectLink, setShowRedirectLink] = useState(false);
 
   useEffect(() => runAsynchronously(async () => {
@@ -18,7 +17,7 @@ export default function OAuthCallback () {
     try {
       hasRedirected = await app.callOAuthCallback();
     } catch (e: any) {
-      setError(e);
+      await app.redirectToSignIn();
     }
     if (!hasRedirected) {
       await app.redirectToSignIn();
@@ -31,10 +30,5 @@ export default function OAuthCallback () {
 
   return <MessageCard title='Redirecting...' fullPage>
     {showRedirectLink ? <p>If you are not redirected automatically, <a href={app.urls.home}>click here</a>.</p> : null}
-    {error ? <div>
-      <p>Something went wrong while processing the OAuth callback:</p>
-      <pre>{JSON.stringify(error, null, 2)}</pre>
-      <p>This is most likely an error in Stack. Please report it.</p>
-    </div> : null}
   </MessageCard>;
 }
