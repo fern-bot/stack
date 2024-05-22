@@ -2,6 +2,11 @@
 // https://github.com/zalify/easy-email-editor/issues/222
 
 import dynamic from "next/dynamic";
+import "easy-email-editor/lib/style.css";
+import "easy-email-extensions/lib/style.css";
+
+// theme, If you need to change the theme, you can make a duplicate in https://arco.design/themes/design/1799/setting/base/Color
+import "@arco-themes/react-easy-email-theme/css/arco.css";
 
 const EmailEditorComponent = dynamic(
   () =>
